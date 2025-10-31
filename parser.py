@@ -116,6 +116,7 @@ class Parser :
                 programNode.add_child(func)
             
             else:
+
                 # If not, program is over or we found an error
                 self.syntaxError('return type', current['type'])
         return programNode
