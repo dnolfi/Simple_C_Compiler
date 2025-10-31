@@ -43,7 +43,7 @@ def checkToken(token, lineNum) :
             found_tokens.append({"type": "id", "value": token, "line": lineNum})
     elif constant.fullmatch(token) :
         print("const:", token, "on line:", lineNum)
-        found_tokens.append({"type": "const","value": token,"line": lineNum})
+        found_tokens.append({"type": "const","value": int(token),"line": lineNum})
     elif open_parenth.fullmatch(token) :
         print("opar:", token, "on line:", lineNum)
         found_tokens.append({"type": "opar", "value": token, "line": lineNum})

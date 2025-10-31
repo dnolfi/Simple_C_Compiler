@@ -13,8 +13,9 @@ class SyntaxTreeNode :
         print('  ' * indent + f"{self.node_type}", end='')
 
         # If the node has any special fields (like function name or expression), print them
-        if hasattr(self, 'functionName'):
-            print(f": {self.functionName}")
+        if hasattr(self, 'functionName') and hasattr(self, 'returnType'):
+            print(f": {self.returnType} {self.functionName}")
+        
         elif hasattr(self, 'statement'):
             print(f": {self.statement}")
         elif hasattr(self, 'exp'):
@@ -45,8 +46,9 @@ class Program(SyntaxTreeNode) :
 # Function AST node: contains name of function and children
 # child nodes are statements and function calls within function body
 class Function(SyntaxTreeNode) :
-    def __init__(self, functionName) :
+    def __init__(self, returnType, functionName) :
         super().__init__("Function")
+        self.returnType = returnType
         self.functionName = functionName
 
 
