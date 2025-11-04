@@ -37,7 +37,7 @@ cg.traverseTree(tree)
 # Now we need to write our asm to a file, assemble it and then we can run the executable
 with open(f"{executableName}.s", "w") as f :
     for line in cg.asm :
-        if line.startswith((";", ".")) or line.endswith(":") :
+        if line.startswith((";", "section", "global")) or line.endswith(":") :
             f.write(f"{line}\n")
         else :
             f.write(f"\t{line}\n")
