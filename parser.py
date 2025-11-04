@@ -8,6 +8,7 @@ import tree as tr
 import json
 import sys
 import pprint as pp
+import asmgen as gen
 
 class Parser :
     # Constructor
@@ -21,6 +22,7 @@ class Parser :
     def advanceToken(self) :
         self.tokenIndex += 1
         
+    # Print syntax errors
     def syntaxError(self, expected, actual) :
         if self.tokenIndex >= len(self.tokens) :
             lineInfo = "EOF"
@@ -59,14 +61,15 @@ class Parser :
     # Expects: keyword, exp and semicol
     # Returns: a Statement node
     def parseStatement(self) :
+
         ret = self.expect('kw')
         return_val = self.parseConst()
         self.expect('semcol')
 
-        statementNode = tr.Statement(ret['value'])
-        statementNode.add_child(return_val)
+        ret = tr.Return('return')
+        ret.add_child(return_val)
 
-        return statementNode
+        return ret
 
 
     # Expects: return type (void, int), identifier (main), open parenth, close parenth, obra and cbra
@@ -116,45 +119,7 @@ class Parser :
                 programNode.add_child(func)
             
             else:
-
                 # If not, program is over or we found an error
                 self.syntaxError('return type', current['type'])
         return programNode
-
-# Need to load our dictionary of tokens from the lexer step
-with open('tokens.json', 'r') as tokenFile :
-    tokens = json.load(tokenFile)
-
-
-# Want to define a set of grammar rules so that we know how to classify our tokens in the tree. Ex:
-
-# <program> ::= <function>
-# <function> ::= "int" <identifier> "(" "void" ")" "{" <statement> "}"
-# <statement> ::= "return" <exp> ";"
-# <exp> ::= <int>
-# <identifier> ::= ? An identifier token ?
-# <int> ::= ? A constant token ?
-
-# Using the grammar rules, we can create our tree and then move on to generating assembly to create the
-# actual executable program
-
-# It's called recursive descent parsing because the parsing functions recursively call eachother to verify the next token
-# Ex: We call parseFunction(), which verifies that the function was defined properly
-#     parseFunction() then calls parseStatement(), which in turn calls parseConstant(), and the process repeats until 
-#     parseFunction() returns the node
-
-# Should take the tokens provvided in 'lexer.py' and then create a corresponding node for each token
-# The list of possible tokens we have is:
-# id, kw, obra, cbra, opar, cpar, const, semcol
-
-# Root node of the AST is our program node
-
-parser = Parser(tokens)
-
-tree = parser.parseProgram()
-
-tree.pretty_print()
-
-tokenFile.close()
-
 
